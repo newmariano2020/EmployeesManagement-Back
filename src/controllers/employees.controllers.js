@@ -19,15 +19,15 @@ export const getEmployee = async (req, res) => {
 };
 
 export const getListEmployees = async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.query.userId;
 
   try {
-    if (!user) {
+    if (!userId) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
     const [employees] = await pool.query(
-      `SELECT * FROM employees WHERE user_id = ?`,
-      [req.params.id]
+      "SELECT * FROM employees WHERE user_id = ?",
+      [userId]
     );
 
     res.setHeader(
@@ -92,7 +92,7 @@ export const deleteEmployee = async (req, res) => {
     console.log("executed");
     if (result.affectedRows <= 0)
       return res.status(404).json({ message: "employee not found" });
-    res.sendStatus(204)
+    res.sendStatus(204);
   } catch (error) {
     return res.status(500).json({ message: "something went wrong" });
   }
@@ -101,7 +101,6 @@ export const deleteEmployee = async (req, res) => {
 export const updateEmployee = async (req, res) => {
   const id = req.params.id;
   const { name, salary, userId } = req.body;
-
 
   try {
     const [result] = await pool.query(
